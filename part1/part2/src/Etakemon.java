@@ -1,16 +1,15 @@
-package edu.upc.eetac.dsa;
 
 /**
  * Created by rosa on 18/11/2016.
  */
-public class Pokemon implements Etakemon {
+public class Etakemon {
 
     private String nom;
     private String descripcio;
-    private int tipus;
+    private String tipus;
 
 
-    public Pokemon(String nom, String descripcio, int tipus) {
+    public Etakemon(String nom, String descripcio, String tipus) {
         this.nom = nom;
         this.descripcio = descripcio;
         this.tipus = tipus;
@@ -33,11 +32,11 @@ public class Pokemon implements Etakemon {
         this.descripcio = descripcio;
     }
 
-    public int getTipus() {
+    public String getTipus() {
         return tipus;
     }
 
-    public void setTipus(int tipus) {
+    public void setTipus(String tipus) {
         this.tipus = tipus;
     }
 }

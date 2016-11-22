@@ -1,133 +1,93 @@
 package edu.upc.eetac.dsa;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import org.apache.log4j.Logger;
 
 /**
  * Created by rosa on 18/11/2016.
  */
 public class Manager implements GameManager{
 
-    private List<User> users = new ArrayList<User>();
-    private User user;
+    final static Logger logger = Logger.getLogger(Manager.class);
+
+    //hashmap de user i llista de etakemons
+    Map<String,User> lUsers;
     private List<Etakemon> etakemons = new ArrayList<Etakemon>();
-    private Etakemon etakemon;
 
-    private List<Etakemon> userEtakemons = new ArrayList<Etakemon>();
+    // Creo el Singleton pq nomes hi hagi una instancia d'aquesta classe
+    private static Manager instance;
 
-    public Manager(){}
+    private Manager(){
+        lUsers= new HashMap<String, User>();
+    }
 
+    public static Manager getInstance(){
+        if (instance == null) instance = new Manager();
+        return instance;
+    }
 
-    @Override
-    public List<User> userByName()
-    {
-        if (!users.isEmpty())
-        {
-            Collections.sort(users, new Comparator<Employee>()
-            {
-                @Override
-                public int compare(Employee e1, Employee e2) {
-                    //You should ensure that list doesn't contain null values!
-                    return e1.getName().compareTo(e2.getName());
-                }
-            });
+    //-------------------------------------
+    //implemento les funcions
+
+    //afegir user
+    public void addUser(String name, int id, String password){
+        User nouUser = new User(name, id, password);
+        lUsers.put(name, nouUser);
+        logger.info("Usuari " + name + " afegit");
+    }
+
+    //consultar info de l'user passat pel name
+    public User selectUser(String name){
+        User usuari= lUsers.get(name);
+        if(usuari==null){
+            logger.error("l'usuari no existeix");
+            return null;
+        } else {
+            logger.info("L'usuari seleccionat es: " + usuari.getName());
+            return lUsers.get(name);
         }
-        return this.users;
-    }
+    };
 
-    @Override
-    public void addUser(String name, int id)
-    {
-        user = new User (name,id);
-        users.add(user);
-    }
-    @Override
-    public List<Etakemon> allEtakemons()
-    {
-        return this.etakemons;
-    }
-
-    @Override
-    public void addEtakemon(String nom, String descripcio, int tipus)
-    {
-        etakemon = new Etakemon (nom,descripcio, tipus);
-        etakemons.add(etakemon);
-    }
-
-
-
-
-
-
-
-    //public void addEmployee(String DNI, String name, double salary, String Department){} Employee esta declarada como abstracta.
-
-    @Override
-    public void addSalesMan(String DNI, String name, double salary, String department)
-    {
-        salesman = new Salesman(DNI, name, salary, department);
-        employees.add(salesman);
-    }
-
-    @Override
-    public void addDirector(String DNI, String name, double salary, String department)
-    {
-        director = new Director(DNI, name, salary,department);
-        employees.add(director);
-    }
-
-    @Override
-    public void addSale(String DNI, int sale, double amount)
-    {
-        for (int i=0; i<employees.size(); i++)
-        {
-            if(employees.get(i).getDNI().equals(DNI))
-            {
-                employees.get(i).setSale(sale, amount);
-            }
+    //modifico els camps password i lEtakemons de un usuari passat pel name
+    public void updateUser(String name, String password, List<Etakemon> lEtakemons){
+        User updateUser = lUsers.get(name);
+        if(updateUser==null){
+            logger.error ("L'usuari no existeix");
+        } else {
+            logger.info("Al usuari " + name + "se li modificarà el password" + updateUser.getPassword());
+            updateUser.setPassword(password);
+            updateUser.setlEtakemons(lEtakemons);
+            logger.info("L'usuari " + updateUser.getName() + "ha estat modificat amb el password" + updateUser.getPassword());
+            lUsers.put(name, updateUser);
         }
-    }
+    };
 
+    //torna la llista de etakemons ordenats per ordre d'inserció d'un usuari passat pel name
+    public List<Etakemon> selectEtakemons(String name){
+        User selectedUser = lUsers.get(name);
+        logger.info("el llistat de etakemons es: "+selectedUser.getlEtakemons() );
+        return selectedUser.getlEtakemons();
+    };
 
-    @Override
-    public List<Employee> employeeBySalary()
-    {
-        updateSalaries();
-        Collections.sort(employees, new Comparator<Employee>() {
-            @Override
-            public int compare(Employee o1, Employee o2) {
-                return Double.compare(o1.getSalary(), o2.getSalary());
-            }
-        });
-        return employees;
-    }
+    //afegeix un etakemon a la llista de etakemons d'un usuari
+    public void addEtakemon(Etakemon pokemon, String name){
+        User updateUser = lUsers.get(name);
+        updateUser.addlEtakemons(pokemon);
+        logger.info("Al usuari "+updateUser.getName()+ "se li ha afegit el etakemon " +pokemon.getNom());
+        lUsers.put(name, updateUser);
+    };
 
-
-
-    @Override
-    public List<Employee> employeesByDepartment(String department)
-    {
-        for (int i=0; i<employees.size();i++)
-        {
-            if(employees.get(i).getDepartment().equals(department))
-            {
-                depEmployees.add(employee);
-            }
+    //llistar els usuaris ordenats pel nom
+    public List<String> usersPorNombre(List<User> lUsers){
+        //creo la llista buida ltemp d strings
+        List<String> ltemp= new ArrayList<String>();
+        //llegeix un a un la llista de users
+        for (Map.Entry<String,User> temp: this.lUsers.entrySet()){
+            ltemp.add(temp.getKey());
+        //un cop tenim la llista ja la podem ordenar
         }
-        if (!depEmployees.isEmpty())
-        {
-            Collections.sort(depEmployees, new Comparator<Employee>()
-            {
-                @Override
-                public int compare(Employee e1, Employee e2)
-                {
-                    return Double.compare(e1.getSalary(), e2.getSalary());
-                }
-            });
-        }
-        return depEmployees;
-    }
-
+        Collections.sort(ltemp);
+        logger.info ("La llista d'usuaris orenada pels noms es: " +ltemp);
+        return ltemp;
+    };
 }

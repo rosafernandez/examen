@@ -220,10 +220,10 @@ public abstract class DAO {
 
     //-------------------------------------------------------
 
-    //SELECT d'un etakemon
+    //SELECT  etakemons dun usuari (donant el name) en ordre d'inserció
     public void select2(int id) {
         StringBuffer sb = new StringBuffer();
-        sb.append("SELECT * FROM ").append(this.getClass().getSimpleName()).append(" WHERE nom = ").append(id);
+        sb.append("SELECT etakemons FROM ").append(this.getClass().getSimpleName()).append(" WHERE name = ").append(id);
         System.out.println("QUERY: " + sb.toString());
 
         Connection con = getConnection();
@@ -252,7 +252,49 @@ public abstract class DAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }//UPDATE: afegir un etakemon a l'usuari q indiques (per id)
+    public void update2() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("UPDATE ").append(this.getClass().getSimpleName()).append(" SET ");
+
+        Field[] fields = this.getClass().getDeclaredFields(); //campos--> obtener campos declarados en esta clase:nom, descripcio, tipus
+
+        int numfields = 0;
+        for (Field f : fields) {
+            if (numfields == fields.length - 1) {
+                sb.append(f.getName() + "=?");
+            } else {
+                sb.append(f.getName() + "=?,");
+            }
+            numfields++;
+        }
+
+        int id = Integer.parseInt(getValors(fields[0])); //convertir el string corresponent a la [0] de fields q fa referencia al id a int
+        sb.append(" WHERE id=" + id);
+        //si fos per name: sb.append (" WHERE name=" + nom);
+
+        System.out.println("QUERY: " + sb.toString());
+
+        Connection con = getConnection();
+        try {
+            PreparedStatement preparedStatement = con.prepareStatement(sb.toString());
+            insertarElementos(preparedStatement);
+            preparedStatement.execute();
+
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
+
+    //-----------------------------------------------------------------------
+
+
 }
 
 

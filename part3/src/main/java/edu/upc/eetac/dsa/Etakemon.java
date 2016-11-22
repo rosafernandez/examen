@@ -5,20 +5,19 @@ package edu.upc.eetac.dsa;
 //creo la classe etakemon amb els seus atributs, el constructor i els getters i setters (code-> generate)
 public class Etakemon extends DAO {
 
-    public int tipus;
-    public String nom, descripcio;
+    public String nom, descripcio,tipus;
 
-    public Etakemon(int tipus, String nom, String descripcio) {
+    public Etakemon(String tipus, String nom, String descripcio) {
         this.tipus = tipus;
         this.nom = nom;
         this.descripcio = descripcio;
     }
 
-    public int getTipus() {
+    public String getTipus() {
         return tipus;
     }
 
-    public void setTipus(int tipus) {
+    public void setTipus(String tipus) {
         this.tipus = tipus;
     }
 

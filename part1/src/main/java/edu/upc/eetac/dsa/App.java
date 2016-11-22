@@ -1,6 +1,9 @@
 package edu.upc.eetac.dsa;
 
+import org.apache.log4j.Logger;
+
 import java.util.List;
+import java.util.concurrent.SynchronousQueue;
 
 /**
  * Hello world!
@@ -8,22 +11,19 @@ import java.util.List;
  */
 public class App 
 {
+    final static Logger logger = Logger.getLogger(Manager.class);
+
     public static void main(String[] args)
     {
-        GameManager manager = new Manager();
 
-        manager.addUser("rosa",1);
-        manager.addUser("marina",2);
+        //User user = new User("rosa",1,"copito");
+        Manager.getInstance().addUser("rosa",1,"copito");
+        User user = Manager.getInstance().selectUser("rosa2");
+        if(user!= null)
+            logger.info("nom: " + user.getName() +
+                ", password: " + user.getPassword() +
+                ", id: " + user.getId() + ", etakemons: " +
+                user.getlEtakemons());
 
-        manager.addEtakemon("pikaxu", "fort", 1);
-        manager.addEtakemon("rakitxu", "debil", 3);
-
-
-     /*
-        List<User> lUser3 = manager.userByName();
-        for (int i = 0; i<lUser3.size();i++){ //Imprimir los usuarios
-            System.out.println(lUser3.get(i).getName());
-        }
-        */
     }
 }

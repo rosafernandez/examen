@@ -31,8 +31,12 @@ public class AppTest
     /**
      * Rigourous Test :-)
      */
+
+    //test que comprova si el usuari NO existeix. Si l'usuari no existeix, passa el test.
     public void testApp()
     {
-        assertTrue( true );
+        Manager.getInstance().addUser("rosa",1,"copito",null);
+        User user = Manager.getInstance().selectUser("rosa");
+        assertEquals(null, user);
     }
 }
